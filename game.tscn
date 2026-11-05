@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://2j5vi1dg3qm1"]
+
+[ext_resource type="Script" uid="uid://dktaru2exkukf" path="res://games/minigame/godot_party_default_multi_snake_game/game.gd" id="1_uhknt"]
+[ext_resource type="Script" uid="uid://bvihxku4gjej4" path="res://games/minigame/godot_party_default_multi_snake_game/arena_view.gd" id="2_uygxa"]
+
+[node name="MultiSnakeGame" type="Control" unique_id=1075250740 groups=["party_minimal_hud"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uhknt")
+
+[node name="Arena" type="Control" parent="." unique_id=900628843]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_uygxa")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1780777062]
+
+[node name="Overlay" type="Control" parent="HUD" unique_id=478873061]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="TopLeft" type="MarginContainer" parent="HUD/Overlay" unique_id=1792971414]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 26.0
+mouse_filter = 2
+
+[node name="StatsGroup" type="VBoxContainer" parent="HUD/Overlay/TopLeft" unique_id=1489472849]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 7
+
+[node name="Title" type="Label" parent="HUD/Overlay/TopLeft/StatsGroup" unique_id=383441478]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 25
+text = "蛇蛇大作战"
+
+[node name="Stats" type="Label" parent="HUD/Overlay/TopLeft/StatsGroup" unique_id=1465201381]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 21
+
+[node name="Timer" type="Label" parent="HUD/Overlay" unique_id=96547383]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -90.0
+offset_top = 26.0
+offset_right = 90.0
+offset_bottom = 76.0
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+
+[node name="Leaders" type="Label" parent="HUD/Overlay" unique_id=1983680155]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -355.0
+offset_top = 26.0
+offset_right = -32.0
+offset_bottom = 270.0
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 2
+
+[node name="Message" type="Label" parent="HUD/Overlay" unique_id=926320111]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.72
+anchor_right = 0.5
+anchor_bottom = 0.72
+offset_left = -500.0
+offset_right = 500.0
+offset_bottom = 60.0
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 29
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="HUD/Overlay" unique_id=1258486021]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -56.0
+offset_right = -32.0
+offset_bottom = -18.0
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20

@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "core_api_major": 4,
+  "package_version": "1.0.0",
+  "id": "godot_party_default_multi_snake_game",
+  "name": "蛇蛇大作战",
+  "kind": "minigame",
+  "entry": "game.tscn",
+  "player_counts": [1, 2, 3, 4, 5, 6, 7, 8],
+  "tags": ["original", "arcade"],
+  "dependencies": {"godot_party_default_protocol": "1.0.0"},
+  "adapters": [{"id": "standard", "protocol": {"id": "godot_party_default_protocol", "api_major": 1, "min_api_minor": 0}, "entry": "adapter.gd"}],
+  "config_schema": "settings.gd",
+  "streams": {"state": {"mode": "ordered", "audience": "instance"}},
+  "introduction": "1–8 人同场蛇蛇竞技：鼠标或方向键转向，吞食光点成长，加速消耗长度。撞墙或撞到别人的蛇身会死亡，3 秒后自动复活，出生保护 2 秒。可以穿过自己。默认 3 分钟，按本轮最高长度排名。",
+  "controls": {"multi_snake_boost": "加速（消耗长度）", "multi_snake_ranks": "按住查看全部排名"},
+  "localization": {"supported_locales": ["zh_Hans"], "fallback_locale": "zh_Hans", "translations": {"zh_Hans": "i18n/zh_Hans.po"}}
+}

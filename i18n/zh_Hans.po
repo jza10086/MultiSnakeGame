@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Language: zh_Hans\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "蛇蛇大作战"
+msgstr "蛇蛇大作战"
+
+msgid "1–8 人同场蛇蛇竞技：鼠标或方向键转向，吞食光点成长，加速消耗长度。撞墙或撞到别人的蛇身会死亡，3 秒后自动复活，出生保护 2 秒。可以穿过自己。默认 3 分钟，按本轮最高长度排名。"
+msgstr "1–8 人同场蛇蛇竞技：鼠标或方向键转向，吞食光点成长，加速消耗长度。撞墙或撞到别人的蛇身会死亡，3 秒后自动复活，出生保护 2 秒。可以穿过自己。默认 3 分钟，按本轮最高长度排名。"
+
+msgid "比赛时限（秒）"
+msgstr "比赛时限（秒）"
+
+msgid "加速（消耗长度）"
+msgstr "加速（消耗长度）"
+
+msgid "查看全部排名"
+msgstr "查看全部排名"
+
+msgid "游戏规则"
+msgstr "游戏规则"
+
+msgid "操作"
+msgstr "操作"
+
+msgid "向左"
+msgstr "向左"
+
+msgid "向右"
+msgstr "向右"
+
+msgid "向上"
+msgstr "向上"
+
+msgid "向下"
+msgstr "向下"
+
+msgid "hud.controls"
+msgstr "鼠标指向 / 方向键转向    {boost} 加速    {rank} 排名    Esc 菜单"
+
+msgid "hud.stats"
+msgstr "长度 {length}    最高 {best}    击败 {kills}"
+
+msgid "hud.respawn"
+msgstr "被击败了 · {seconds} 秒后复活"
+
+msgid "hud.protected"
+msgstr "出生保护 · {seconds} 秒"
+
+msgid "hud.spectating"
+msgstr "观战中"
+
+msgid "hud.leaders"
+msgstr "本轮最高长度"

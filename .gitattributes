@@ -1,0 +1,5 @@
+* text=auto
+*.gd text eol=lf
+*.tscn text eol=lf
+*.json text eol=lf
+*.po text eol=lf
