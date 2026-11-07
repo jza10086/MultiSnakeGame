@@ -1,7 +1,11 @@
 [gd_scene format=3 uid="uid://2j5vi1dg3qm1"]
 
 [ext_resource type="Script" uid="uid://dktaru2exkukf" path="res://games/minigame/godot_party_default_multi_snake_game/game.gd" id="1_uhknt"]
+[ext_resource type="FontFile" uid="uid://ycpuwgjxu5k" path="res://games/protocols/godot_party_default_protocol/fonts/NotoSansSC-UI.otf" id="1_uygxa"]
 [ext_resource type="Script" uid="uid://bvihxku4gjej4" path="res://games/minigame/godot_party_default_multi_snake_game/arena_view.gd" id="2_uygxa"]
+
+[sub_resource type="Theme" id="Theme_b8gk3"]
+default_font = ExtResource("1_uygxa")
 
 [node name="MultiSnakeGame" type="Control" unique_id=1075250740 groups=["party_minimal_hud"]]
 layout_mode = 3
@@ -10,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_b8gk3")
 script = ExtResource("1_uhknt")
 
 [node name="Arena" type="Control" parent="." unique_id=900628843]
@@ -27,6 +32,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
 [node name="TopLeft" type="MarginContainer" parent="HUD/Overlay" unique_id=1792971414]
@@ -54,6 +61,7 @@ layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 21
+text = "长度 42    最高 68    击败 2"
 
 [node name="Timer" type="Label" parent="HUD/Overlay" unique_id=96547383]
 unique_name_in_owner = true
@@ -67,6 +75,7 @@ offset_bottom = 76.0
 theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 32
+text = "02:38"
 horizontal_alignment = 1
 
 [node name="Leaders" type="Label" parent="HUD/Overlay" unique_id=1983680155]
@@ -81,6 +90,10 @@ offset_bottom = 270.0
 theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 20
+text = "本轮最高长度
+1  玩家示例甲  ·  68
+2  玩家示例乙  ·  42
+3  玩家示例丙  ·  22"
 horizontal_alignment = 2
 
 [node name="Message" type="Label" parent="HUD/Overlay" unique_id=926320111]
@@ -96,6 +109,7 @@ offset_bottom = 60.0
 theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 29
+text = "出生保护 · 2 秒"
 horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="HUD/Overlay" unique_id=1258486021]
@@ -111,3 +125,4 @@ offset_bottom = -18.0
 theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 20
+text = "鼠标指向 / 方向键转向    鼠标左键 / Space 加速    Tab 排名    Esc 菜单"

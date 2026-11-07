@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "core_api_major": 4,
-  "package_version": "1.0.0",
+  "package_version": "1.0.1",
   "id": "godot_party_default_multi_snake_game",
   "name": "蛇蛇大作战",
   "kind": "minigame",

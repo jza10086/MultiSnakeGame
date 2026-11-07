@@ -12,7 +12,7 @@ var zoom: float = 1.0
 var camera_ready: bool = false
 var show_names: bool = false
 var aim: Vector2 = Vector2.ZERO
-var font: Font
+@onready var font: Font = get_theme_default_font()
 var pulse: float = 0.0
 
 func accept(snapshot: Dictionary) -> void:

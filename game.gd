@@ -43,10 +43,12 @@ func _ready() -> void:
 	if api == null:
 		push_error("请从 GodotParty 大厅启动蛇蛇大作战。")
 		return
-	var font: Font = api.load_asset({"package_id": "godot_party_default_protocol", "resource_key": "font_sans"}) as Font
-	theme = Theme.new()
-	theme.default_font = font
-	arena.font = font
+	%Title.text = api.i18n.text(&"蛇蛇大作战")
+	# Scene captions are editor examples; only round snapshots supply live values.
+	stats.text = ""
+	timer.text = ""
+	message.text = ""
+	leaders.text = ""
 	arena.local_id = local_id
 	arena.names = names
 	for player: Dictionary in players:
@@ -80,6 +82,11 @@ func _disconnect() -> void:
 		api.net.message_received.disconnect(_message)
 	if api.players_changed.is_connected(_players_changed):
 		api.players_changed.disconnect(_players_changed)
+
+## The local standings action owns its key before the framework's unhandled Tab shortcut.
+func _input(event: InputEvent) -> void:
+	if running and api.input.event_matches(event, &"multi_snake_ranks"):
+		get_viewport().set_input_as_handled()
 
 func _process(delta: float) -> void:
 	if not running:
@@ -171,9 +178,9 @@ func _finish() -> void:
 	running = false
 	var error: Error = pages.present({"request_id": request.request_id, "reason": "completed",
 		"rankings": world.rankings(), "columns": [
-			{"key": "length", "title": "最高长度", "format": "integer"},
-			{"key": "kills", "title": "击败", "format": "integer"},
-			{"key": "deaths", "title": "死亡", "format": "integer"}]})
+			{"key": "length", "title": api.i18n.text(&"result.length"), "format": "integer"},
+			{"key": "kills", "title": api.i18n.text(&"result.kills"), "format": "integer"},
+			{"key": "deaths", "title": api.i18n.text(&"result.deaths"), "format": "integer"}]})
 	if error != OK:
 		_fail(error)
 
@@ -184,7 +191,8 @@ func _fail(error: Error) -> void:
 func _update_hud() -> void:
 	if view.is_empty():
 		return
-	timer.text = "%02d:%02d" % [int(ceil(view.time)) / 60, int(ceil(view.time)) % 60]
+	var seconds: int = ceili(view.time)
+	timer.text = api.i18n.text(&"hud.timer", {"minutes": str(seconds / 60).pad_zeros(2), "seconds": str(seconds % 60).pad_zeros(2)})
 	message.text = ""
 	if local_id.is_empty():
 		stats.text = api.i18n.text(&"hud.spectating")
@@ -201,5 +209,8 @@ func _update_hud() -> void:
 	var limit: int = rows.size() if arena.show_names else mini(3, rows.size())
 	for index: int in range(limit):
 		var id: String = rows[index]
-		lines.append("%d  %s  ·  %d" % [index + 1, names[id], int(view.snakes[id].best)])
-	leaders.text = "\n".join(lines)
+		lines.append(api.i18n.text(&"hud.leader_row", {"position": index + 1, "player": names[id], "length": int(view.snakes[id].best)}))
+	# Keep one editable Label; only replace its caption when visible standings change.
+	var caption: String = "\n".join(lines)
+	if leaders.text != caption:
+		leaders.text = caption

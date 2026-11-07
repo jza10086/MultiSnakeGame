@@ -11,4 +11,6 @@ GodotParty API 4 / manifest 2 小游戏，适配 GodotPartyDefaultProtocol 1.0 �
 
 房主固定 60 Hz 模拟，客户端 20 Hz 发送逻辑转向与加速，约 12.5 Hz 接收有序快照并插值显示；姓名与颜色取房间资料。`snake_world.gd` 管规则，`arena_view.gd` 管绘制，`game.gd` 管生命周期与网络。
 
+HUD 的布局、示例文字和字体 Theme 保存在 `game.tscn`，启动不覆盖场景 Theme；示例不进入对局数据。排行榜复用同一 Label，显示内容由 `i18n/zh_Hans.po` 的命名参数模板生成；动态蛇身、光点和小地图继续由视图绘制。全榜动作在游戏输入可用时消费对应按键，避免同时打开框架排名弹窗。准备/结算仍使用协议现有 round_pages，共享生命周期迁移由协议统一处理。
+
 美术为程序绘制，没有外部下载资产。不使用或包含 Slither.io 的品牌和素材。

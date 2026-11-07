@@ -53,3 +53,18 @@ msgstr "观战中"
 
 msgid "hud.leaders"
 msgstr "本轮最高长度"
+
+msgid "hud.leader_row"
+msgstr "{position}  {player}  ·  {length}"
+
+msgid "hud.timer"
+msgstr "{minutes}:{seconds}"
+
+msgid "result.length"
+msgstr "最高长度"
+
+msgid "result.kills"
+msgstr "击败"
+
+msgid "result.deaths"
+msgstr "死亡"
