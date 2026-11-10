@@ -1,10 +1,11 @@
 {
   "manifest_version": 2,
   "core_api_major": 5,
-  "package_version": "1.0.8",
+  "package_version": "1.0.9",
   "id": "godot_party_default_multi_snake_game",
   "name": "蛇蛇大作战",
   "kind": "minigame",
+  "supported_systems": ["windows"],
   "entry": "game.tscn",
   "player_counts": [
     1,
@@ -21,7 +22,7 @@
     "arcade"
   ],
   "dependencies": {
-    "godot_party_default_protocol": "1.0.6"
+    "godot_party_default_protocol": "1.0.7"
   },
   "adapters": [
     {
