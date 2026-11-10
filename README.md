@@ -1,6 +1,6 @@
 # 蛇蛇大作战 · MultiSnakeGame
 
-GodotParty API 4 / manifest 2 小游戏，适配 GodotPartyDefaultProtocol 1.0 普通排名局。安装在 `games/minigame/godot_party_default_multi_snake_game/`，从正式大厅的小游戏轮换中选择；本仓库是内容包，依赖宿主工程及协议，不是独立 Godot 工程。
+GodotParty API 4 / manifest 2 小游戏，适配 GodotPartyDefaultProtocol 1.0 普通排名局。安装在 `games/minigame/gp_snake_battle/`，从正式大厅的小游戏轮换中选择；本仓库是内容包，依赖宿主工程及协议，不是独立 Godot 工程。
 
 - 支持 1–8 人在线同场；单人可练习，无 AI、无同屏本地多人。
 - 鼠标指向转向，或按住 WASD / 方向键。鼠标左键 / 空格加速，R 按住展开本局排名，Tab 按住查看框架延迟面板，Esc 打开框架菜单。动作可在本机设置中重绑。

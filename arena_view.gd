@@ -1,6 +1,6 @@
 ## Presentation only: interpolate authoritative bodies and follow the local snake.
 extends Control
-const World: Script = preload("res://games/minigame/godot_party_default_multi_snake_game/snake_world.gd")
+const World: Script = preload("res://games/minigame/gp_snake_battle/snake_world.gd")
 var current: Dictionary = {}
 var previous: Dictionary = {}
 var blend: float = 1.0

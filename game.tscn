@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://2j5vi1dg3qm1"]
 
-[ext_resource type="Script" uid="uid://dktaru2exkukf" path="res://games/minigame/godot_party_default_multi_snake_game/game.gd" id="1_uhknt"]
+[ext_resource type="Script" uid="uid://dktaru2exkukf" path="res://games/minigame/gp_snake_battle/game.gd" id="1_uhknt"]
 [ext_resource type="FontFile" uid="uid://ycpuwgjxu5k" path="res://games/protocols/godot_party_default_protocol/fonts/NotoSansSC-UI.otf" id="1_uygxa"]
-[ext_resource type="Script" uid="uid://bvihxku4gjej4" path="res://games/minigame/godot_party_default_multi_snake_game/arena_view.gd" id="2_uygxa"]
+[ext_resource type="Script" uid="uid://bvihxku4gjej4" path="res://games/minigame/gp_snake_battle/arena_view.gd" id="2_uygxa"]
 
 [sub_resource type="Theme" id="Theme_b8gk3"]
 default_font = ExtResource("1_uygxa")
