@@ -17,6 +17,7 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var time: float = 0.0
 var duration: float = 180.0
 var refill_clock: float = 0.0
+var next_food_id: int = 0
 
 func reset(ids: Array[String], seed_value: int, seconds: float) -> void:
 	rng.seed = seed_value
@@ -25,6 +26,7 @@ func reset(ids: Array[String], seed_value: int, seconds: float) -> void:
 	refill_clock = 0.0
 	snakes.clear()
 	food.clear()
+	next_food_id = 0
 	for id: String in ids:
 		snakes[id] = {"body": PackedVector2Array(), "angle": 0.0, "aim": 0.0,
 			"mass": START_MASS, "best": START_MASS, "kills": 0, "deaths": 0,
@@ -33,7 +35,7 @@ func reset(ids: Array[String], seed_value: int, seconds: float) -> void:
 			"input_time": 0.0}
 		_spawn(id)
 	for index: int in range(FOOD_COUNT):
-		food.append({"p": _random_point(RADIUS - 40.0), "value": 1})
+		food.append(_food_piece(_random_point(RADIUS - 40.0), 1))
 
 func _random_point(radius: float) -> Vector2:
 	return Vector2.from_angle(rng.randf() * TAU) * sqrt(rng.randf()) * radius
@@ -156,11 +158,11 @@ func tick(delta: float) -> void:
 	if refill_clock >= 0.2:
 		refill_clock = 0.0
 		for index: int in range(mini(8, FOOD_COUNT - food.size())):
-			food.append({"p": _random_point(RADIUS - 40.0), "value": 1})
+			food.append(_food_piece(_random_point(RADIUS - 40.0), 1))
 
 func _add_food(point: Vector2, value: int) -> void:
 	if food.size() < FOOD_LIMIT:
-		food.append({"p": point.limit_length(RADIUS - 24.0), "value": value})
+		food.append(_food_piece(point.limit_length(RADIUS - 24.0), value))
 
 func _die(id: String, killer: String) -> void:
 	var snake: Dictionary = snakes[id]
@@ -201,3 +203,7 @@ func rankings() -> Array:
 			"status": "withdrawn" if snake.withdrawn else "completed",
 			"metrics": {"length": int(snake.best), "kills": snake.kills, "deaths": snake.deaths}})
 	return result
+
+func _food_piece(point: Vector2, value: int) -> Dictionary:
+	next_food_id += 1
+	return {"id": next_food_id, "p": point, "value": value}

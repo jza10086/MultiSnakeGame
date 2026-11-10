@@ -20,7 +20,7 @@ static func schema() -> Dictionary:
 				"title": "加速（消耗长度）", "audience": "local", "apply": "immediate",
 				"control": "binding", "items": {"type": "object", "format": "binding"}, "max_items": 2},
 			"multi_snake_ranks": {"type": "array", "action": "multi_snake_ranks",
-				"default": [{"kind": "key", "code": 4194306, "physical": true}],
+				"default": [{"kind": "key", "code": KEY_R, "physical": true}],
 				"title": "查看全部排名", "audience": "local", "apply": "immediate",
 				"control": "binding", "items": {"type": "object", "format": "binding"}, "max_items": 2}
 		},

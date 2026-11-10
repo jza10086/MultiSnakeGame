@@ -23,7 +23,7 @@ func accept(snapshot: Dictionary) -> void:
 func _process(delta: float) -> void:
 	if current.is_empty():
 		return
-	blend = minf(1.0, blend + delta / 0.08)
+	blend = minf(1.0, blend + delta / 0.05)
 	pulse += delta
 	var follow: String = local_id
 	if follow.is_empty():

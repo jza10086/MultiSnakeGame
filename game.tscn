@@ -125,4 +125,4 @@ offset_bottom = -18.0
 theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 20
-text = "鼠标指向 / 方向键转向    鼠标左键 / Space 加速    Tab 排名    Esc 菜单"
+text = "鼠标指向 / 方向键转向    鼠标左键 / Space 加速    R 排名    Tab 延迟    Esc 菜单"

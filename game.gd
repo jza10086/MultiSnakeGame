@@ -16,7 +16,17 @@ var publish_clock: float = 0.0
 var input_clock: float = 0.0
 var sequence: int = 0
 var revision: int = 0
-var received_revision: int = -1
+var received_revision: int = 0
+var _published_snakes: Dictionary = {}
+var _published_food: Dictionary = {}
+var _food: Dictionary = {}
+var _head_history: Dictionary = {}
+var _head_ticks: Dictionary = {}
+var _tick: int = 0
+var _sample: int = 0
+var _received_sample: int = 0
+var _pending_motion: Dictionary = {}
+var _end_msec: int = 0
 var action_sequences: Dictionary[String, int] = {}
 var last_action: Dictionary[String, float] = {}
 var names: Dictionary[String, String] = {}
@@ -69,6 +79,7 @@ func _start_play() -> void:
 		for player: Dictionary in players:
 			ids.append(player.player_id)
 		world.reset(ids, api.get_seed(), float(api.get_settings().duration))
+		_end_msec = api.net.host_time_msec() + roundi(float(api.get_settings().duration) * 1000.0)
 		_players_changed()
 		_publish()
 
@@ -83,7 +94,7 @@ func _disconnect() -> void:
 	if api.players_changed.is_connected(_players_changed):
 		api.players_changed.disconnect(_players_changed)
 
-## The local standings action owns its key before the framework's unhandled Tab shortcut.
+## Local standings use their own binding; Tab is reserved for the framework network panel.
 func _input(event: InputEvent) -> void:
 	if running and api.input.event_matches(event, &"multi_snake_ranks"):
 		get_viewport().set_input_as_handled()
@@ -103,8 +114,9 @@ func _process(delta: float) -> void:
 		while accumulator >= World.STEP and world.time < world.duration:
 			accumulator -= World.STEP
 			world.tick(World.STEP)
+			_record_heads()
 		publish_clock += delta
-		if publish_clock >= 0.08:
+		if publish_clock >= 0.05:
 			publish_clock = 0.0
 			_publish()
 		if not running:
@@ -128,7 +140,7 @@ func _send_input() -> void:
 				angle = target.angle()
 	sequence += 1
 	var error: Error = api.net.send_to_host(&"steer", {"seq": sequence, "angle": angle,
-		"boost": api.input.is_pressed(&"multi_snake_boost") and not api.input.input_blocked})
+		"boost": api.input.is_pressed(&"multi_snake_boost") and not api.input.input_blocked}, MultiplayerPeer.TRANSFER_MODE_UNRELIABLE_ORDERED, 1)
 	if error != OK:
 		_fail(error)
 
@@ -136,15 +148,11 @@ func _send_input() -> void:
 func _message(sender: Dictionary, topic: StringName, payload: Variant) -> void:
 	if not running:
 		return
-	if topic == &"state":
-		if sender.peer_id != 1 or not payload is Dictionary:
-			return
-		if not payload.get("revision") is int or payload.revision <= received_revision:
-			return
-		received_revision = payload.revision
-		view = payload
-		arena.accept(view)
-	elif topic == &"steer" and api.is_host():
+	if topic in [&"snake/events", &"snake/motion"] and sender.peer_id == 1 and not api.is_host():
+		if payload is Dictionary:
+			_receive_update(topic, payload)
+		return
+	if topic == &"steer" and api.is_host():
 		if not payload is Dictionary or not payload.get("seq") is int or payload.seq < 1:
 			return
 		if not (payload.get("angle") is float or payload.get("angle") is int) or not is_finite(float(payload.angle)) or not payload.get("boost") is bool:
@@ -160,12 +168,57 @@ func _message(sender: Dictionary, topic: StringName, payload: Variant) -> void:
 				return
 
 func _publish() -> void:
-	revision += 1
-	var snapshot: Dictionary = world.snapshot()
-	snapshot.revision = revision
-	var error: Error = api.net.broadcast_stream(&"state", snapshot)
-	if error != OK:
-		_fail(error)
+	var snakes: Dictionary = {}
+	var motion: Dictionary = {}
+	for id: String in world.snakes:
+		var snake: Dictionary = world.snakes[id]
+		var previous: Dictionary = _published_snakes.get(id, {})
+		var facts: Dictionary = {}
+		var saved: Dictionary = {}
+		for field: String in ["mass", "best", "kills", "deaths", "alive", "withdrawn", "generation", "boost"]:
+			var value: Variant = int(snake[field]) if field in ["mass", "best"] else snake[field]
+			saved[field] = value
+			if not previous.has(field) or previous[field] != value:
+				facts[field] = value
+		if previous.is_empty() or previous.generation != snake.generation:
+			facts["body"] = snake.body.duplicate()
+			facts["angle"] = snake.angle
+			facts["shield_end_msec"] = api.net.host_time_msec() + roundi(snake.shield * 1000.0)
+		if previous.is_empty() or previous.alive != snake.alive:
+			facts["respawn_end_msec"] = api.net.host_time_msec() + roundi(snake.respawn * 1000.0)
+		if not facts.is_empty():
+			snakes[id] = facts
+		_published_snakes[id] = saved
+		if snake.alive and _head_history.has(id):
+			motion[id] = {"generation": snake.generation, "angle": snake.angle, "heads": _head_history[id].points}
+	var live_food: Dictionary = {}
+	var added: Dictionary = {}
+	for piece: Dictionary in world.food:
+		live_food[piece.id] = piece.p
+		if not _published_food.has(piece.id):
+			added[piece.id] = piece.p
+	var removed: Array[int] = []
+	for id: int in _published_food:
+		if not live_food.has(id):
+			removed.append(id)
+	if not snakes.is_empty() or not added.is_empty() or not removed.is_empty() or revision == 0:
+		revision += 1
+		var event: Dictionary = {"revision": revision, "tick": _tick, "snakes": snakes, "food_added": added, "food_removed": removed}
+		if revision == 1:
+			event["end_msec"] = _end_msec
+		var error: Error = api.net.broadcast(&"snake/events", event, MultiplayerPeer.TRANSFER_MODE_RELIABLE, false)
+		if error != OK:
+			_fail(error)
+			return
+	_published_food = live_food
+	if not motion.is_empty():
+		_sample += 1
+		var error: Error = api.net.broadcast(&"snake/motion", {"revision": revision, "sample": _sample, "tick": _tick, "snakes": motion}, MultiplayerPeer.TRANSFER_MODE_UNRELIABLE_ORDERED, false, "instance", 2)
+		if error != OK:
+			_fail(error)
+			return
+	view = world.snapshot()
+	arena.accept(view)
 
 func _players_changed() -> void:
 	if not running or not api.is_host():
@@ -191,7 +244,12 @@ func _fail(error: Error) -> void:
 func _update_hud() -> void:
 	if view.is_empty():
 		return
-	var seconds: int = ceili(view.time)
+	var now: int = api.net.host_time_msec()
+	for snake: Dictionary in view.snakes.values():
+		if not api.is_host():
+			snake.shield = maxf(0.0, float(snake.shield_end_msec - now) / 1000.0)
+			snake.respawn = maxf(0.0, float(snake.respawn_end_msec - now) / 1000.0)
+	var seconds: int = maxi(0, ceili(float(_end_msec - now) / 1000.0))
 	timer.text = api.i18n.text(&"hud.timer", {"minutes": str(seconds / 60).pad_zeros(2), "seconds": str(seconds % 60).pad_zeros(2)})
 	message.text = ""
 	if local_id.is_empty():
@@ -214,3 +272,98 @@ func _update_hud() -> void:
 	var caption: String = "\n".join(lines)
 	if leaders.text != caption:
 		leaders.text = caption
+
+## A short redundant head trail covers ordinary packet loss without retransmitting entire bodies.
+func _record_heads() -> void:
+	_tick += 1
+	for id: String in world.snakes:
+		var snake: Dictionary = world.snakes[id]
+		if not _head_history.has(id) or _head_history[id].generation != snake.generation:
+			_head_history[id] = {"generation": snake.generation, "points": PackedVector2Array()}
+		var points: PackedVector2Array = _head_history[id].points
+		points.append(snake.body[0])
+		if points.size() > 24:
+			points.remove_at(0)
+		_head_history[id].points = points
+
+func _receive_update(topic: StringName, payload: Dictionary) -> void:
+	if not payload.get("revision") is int:
+		return
+	if topic == &"snake/motion":
+		if not payload.get("sample") is int or payload.sample <= _received_sample or not payload.get("tick") is int or not payload.get("snakes") is Dictionary or payload.revision < received_revision:
+			return
+		_received_sample = payload.sample
+		if payload.revision > received_revision:
+			_pending_motion = payload
+		else:
+			_apply_heads(payload)
+		return
+	if payload.revision <= received_revision:
+		return
+	if payload.revision != received_revision + 1 or not payload.get("tick") is int or not payload.get("snakes") is Dictionary or not payload.get("food_added") is Dictionary or not payload.get("food_removed") is Array:
+		_fail(ERR_INVALID_DATA)
+		return
+	if view.is_empty():
+		view = {"snakes": {}, "food": PackedVector2Array()}
+	for id: Variant in payload.snakes:
+		if not id is String or not names.has(id) or not payload.snakes[id] is Dictionary:
+			return
+		var facts: Dictionary = payload.snakes[id]
+		if not view.snakes.has(id):
+			view.snakes[id] = {"shield": 0.0, "respawn": 0.0}
+		if facts.has("body"):
+			if not facts.body is PackedVector2Array or facts.body.is_empty() or facts.body.size() > int(World.MAX_MASS):
+				return
+			for point: Vector2 in facts.body:
+				if not point.is_finite():
+					return
+			_head_ticks[id] = payload.tick
+		view.snakes[id].merge(facts, true)
+	for id: Variant in payload.food_added:
+		if not id is int or not payload.food_added[id] is Vector2 or not payload.food_added[id].is_finite():
+			return
+		_food[id] = payload.food_added[id]
+	for id: Variant in payload.food_removed:
+		if not id is int:
+			return
+		_food.erase(id)
+	view.food = PackedVector2Array(_food.values())
+	if payload.has("end_msec"):
+		if not payload.end_msec is int:
+			return
+		_end_msec = payload.end_msec
+	received_revision = payload.revision
+	if not _pending_motion.is_empty() and _pending_motion.revision <= received_revision:
+		if _pending_motion.revision == received_revision:
+			_apply_heads(_pending_motion, false)
+		_pending_motion.clear()
+	arena.accept(view.duplicate(true))
+
+func _apply_heads(payload: Dictionary, present: bool = true) -> void:
+	for id: Variant in payload.snakes:
+		if not id is String or not view.snakes.has(id) or not payload.snakes[id] is Dictionary:
+			continue
+		var sample: Dictionary = payload.snakes[id]
+		var snake: Dictionary = view.snakes[id]
+		if sample.get("generation") != snake.generation or not sample.get("heads") is PackedVector2Array or sample.heads.size() > 24 or not (sample.get("angle") is float or sample.get("angle") is int) or not is_finite(float(sample.angle)):
+			continue
+		var body: PackedVector2Array = snake.body
+		var length: int = clampi(int(snake.mass), 1, int(World.MAX_MASS))
+		while body.size() < length:
+			body.append(body[body.size() - 1])
+		body.resize(length)
+		for index: int in sample.heads.size():
+			var step_id: int = payload.tick - sample.heads.size() + index + 1
+			var point: Vector2 = sample.heads[index]
+			if step_id <= int(_head_ticks.get(id, -1)) or not point.is_finite():
+				continue
+			body[0] = point
+			for part: int in range(1, body.size()):
+				var gap: Vector2 = body[part - 1] - body[part]
+				if gap.length_squared() > World.SPACING * World.SPACING:
+					body[part] = body[part - 1] - gap.normalized() * World.SPACING
+			_head_ticks[id] = step_id
+		snake.body = body
+		snake.angle = sample.angle
+	if present:
+		arena.accept(view.duplicate(true))
