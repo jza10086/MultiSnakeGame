@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "core_api_major": 5,
-  "package_version": "1.0.10",
+  "package_version": "1.0.11",
   "id": "gp_snake_battle",
   "name": "蛇蛇大作战",
   "kind": "minigame",
@@ -22,7 +22,7 @@
     "arcade"
   ],
   "dependencies": {
-    "godot_party_default_protocol": "1.0.7"
+    "godot_party_default_protocol": "1.0.8"
   },
   "adapters": [
     {
