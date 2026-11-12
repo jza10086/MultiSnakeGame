@@ -8,7 +8,7 @@ var request: Dictionary
 var players: Array[Dictionary]
 var local_id: String = ""
 var world: World = World.new()
-var pages: Pages
+@export var pages: Pages
 var running: bool = false
 var view: Dictionary = {}
 var accumulator: float = 0.0
@@ -64,7 +64,7 @@ func _ready() -> void:
 	for player: Dictionary in players:
 		arena.colors[player.player_id] = Color(api.get_appearance(player.player_id).color)
 	hint.text = api.i18n.text(&"hud.controls", {"boost": api.input.binding_text(&"multi_snake_boost"), "rank": api.input.binding_text(&"multi_snake_ranks")})
-	pages = Pages.new()
+	assert(pages != null, "Assign ProtocolPages in the game scene")
 	var error: Error = pages.prepare(self, api, request, _start_play)
 	if error != OK:
 		_fail(error)

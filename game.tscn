@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://2j5vi1dg3qm1"]
 
+[ext_resource type="PackedScene" path="res://games/minigame/gp_snake_battle/ui/round_pages.tscn" id="protocol_pages"]
+
 [ext_resource type="Script" uid="uid://dktaru2exkukf" path="res://games/minigame/gp_snake_battle/game.gd" id="1_uhknt"]
 [ext_resource type="FontFile" uid="uid://ycpuwgjxu5k" path="res://games/protocols/godot_party_default_protocol/fonts/NotoSansSC-UI.otf" id="1_uygxa"]
 [ext_resource type="Script" uid="uid://bvihxku4gjej4" path="res://games/minigame/gp_snake_battle/arena_view.gd" id="2_uygxa"]
@@ -7,7 +9,8 @@
 [sub_resource type="Theme" id="Theme_b8gk3"]
 default_font = ExtResource("1_uygxa")
 
-[node name="MultiSnakeGame" type="Control" unique_id=1075250740 groups=["party_minimal_hud"]]
+[node name="MultiSnakeGame" type="Control" unique_id=1075250740 groups=["party_minimal_hud"] node_paths=PackedStringArray("pages")]
+pages = NodePath("ProtocolPages")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -126,3 +129,6 @@ theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 20
 text = "鼠标指向 / 方向键转向    鼠标左键 / Space 加速    R 排名    Tab 延迟    Esc 菜单"
+
+[node name="ProtocolPages" parent="." instance=ExtResource("protocol_pages")]
+unique_name_in_owner = true
