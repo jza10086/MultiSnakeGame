@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://games/minigame/gp_snake_battle/ui/round_pages.tscn" id="protocol_pages"]
 
 [ext_resource type="Script" uid="uid://dktaru2exkukf" path="res://games/minigame/gp_snake_battle/game.gd" id="1_uhknt"]
-[ext_resource type="FontFile" uid="uid://ycpuwgjxu5k" path="res://games/protocols/godot_party_default_protocol/fonts/NotoSansSC-UI.otf" id="1_uygxa"]
+[ext_resource type="FontFile" uid="uid://ycpuwgjxu5k" path="res://games/assets/godot_party_default_ui/fonts/NotoSansSC-UI.otf" id="1_uygxa"]
 [ext_resource type="Script" uid="uid://bvihxku4gjej4" path="res://games/minigame/gp_snake_battle/arena_view.gd" id="2_uygxa"]
 
 [sub_resource type="Theme" id="Theme_b8gk3"]
