@@ -1,5 +1,10 @@
 ## Scope lifecycle, authenticated steering and host snapshots. Simulation lives in snake_world.
 extends Control
+
+## Content-owned gameplay rules, independent of package compatibility.
+static func party_definition() -> Dictionary:
+	return {"player_counts": [1, 2, 3, 4, 5, 6, 7, 8], "tags": ["original", "arcade"], "controls": {"multi_snake_boost": "加速（消耗长度）", "multi_snake_ranks": "按住查看全部排名"}}
+
 const World: Script = preload("res://games/minigame/gp_snake_battle/snake_world.gd")
 const Arena: Script = preload("res://games/minigame/gp_snake_battle/arena_view.gd")
 const Pages: Script = preload("res://games/protocols/godot_party_default_protocol/round_pages.gd")
