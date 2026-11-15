@@ -1,5 +1,5 @@
 {
-  "name": "蛇蛇大作战",
+  "id": "GP_snake_battle",
   "kind": "minigame",
   "package_version": "0.0.1",
   "framework_version": "0.0.1",
@@ -8,7 +8,7 @@
     "zh-CN"
   ],
   "dependencies": {
-    "godot_party_default_protocol": "~0.0.1",
-    "godot_party_default_ui": "~0.0.1"
+    "GP_default_protocol": "~0.0.1",
+    "GP_default_ui": "~0.0.1"
   }
 }

@@ -1,9 +1,9 @@
 ## Scope lifecycle, authenticated steering and host snapshots. Simulation lives in snake_world.
 extends Control
 
-const World: Script = preload("res://games/minigame/gp_snake_battle/snake_world.gd")
-const Arena: Script = preload("res://games/minigame/gp_snake_battle/arena_view.gd")
-const Pages: Script = preload("res://games/protocols/godot_party_default_protocol/round_pages.gd")
+const World: Script = preload("res://games/minigame/GP_snake_battle/snake_world.gd")
+const Arena: Script = preload("res://games/minigame/GP_snake_battle/arena_view.gd")
+const Pages: Script = preload("res://games/protocols/GP_default_protocol/round_pages.gd")
 var api: PartyAPI
 var request: Dictionary
 var players: Array[Dictionary]

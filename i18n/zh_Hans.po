@@ -68,3 +68,6 @@ msgstr "击败"
 
 msgid "result.deaths"
 msgstr "死亡"
+
+msgid "package.name"
+msgstr "蛇蛇大作战"
