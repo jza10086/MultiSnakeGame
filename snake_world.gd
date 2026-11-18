@@ -19,12 +19,39 @@ var duration: float = 180.0
 var refill_clock: float = 0.0
 var next_food_id: int = 0
 
+var trails: Dictionary[String, PackedVector2Array] = {}
+
+## Oldest point first. At normal speed 640 fixed steps exceed the longest possible snake.
+const TRAIL_LIMIT: int = 640
+
+static func append_head(trail: PackedVector2Array, point: Vector2) -> void:
+	if trail[-1] != point:
+		trail.append(point)
+		if trail.size() > TRAIL_LIMIT:
+			trail.remove_at(0)
+
+## Sample backwards along the polyline once, at equal distances travelled by the head.
+static func sample_body(trail: PackedVector2Array, length: int) -> PackedVector2Array:
+	var body: PackedVector2Array = PackedVector2Array()
+	var edge: int = trail.size() - 1
+	var start: float = 0.0
+	var span: float = trail[edge].distance_to(trail[edge - 1])
+	for part: int in range(length):
+		var distance: float = part * SPACING
+		while distance > start + span and edge > 1:
+			start += span
+			edge -= 1
+			span = trail[edge].distance_to(trail[edge - 1])
+		body.append(trail[edge].lerp(trail[edge - 1], clampf((distance - start) / span, 0.0, 1.0)))
+	return body
+
 func reset(ids: Array[String], seed_value: int, seconds: float) -> void:
 	rng.seed = seed_value
 	time = 0.0
 	duration = seconds
 	refill_clock = 0.0
 	snakes.clear()
+	trails.clear()
 	food.clear()
 	next_food_id = 0
 	for id: String in ids:
@@ -60,6 +87,7 @@ func _spawn(id: String) -> void:
 	var body: PackedVector2Array = PackedVector2Array()
 	for index: int in range(int(START_MASS)):
 		body.append(best - Vector2.from_angle(angle) * SPACING * index)
+	trails[id] = PackedVector2Array([best - Vector2.from_angle(angle) * SPACING * MAX_MASS, best])
 	snake.body = body
 	snake.angle = angle
 	snake.aim = angle
@@ -100,12 +128,9 @@ func tick(delta: float) -> void:
 			snake.boost = false
 		var boosting: bool = snake.boost and snake.mass > START_MASS + 1.0
 		snake.angle = rotate_toward(snake.angle, snake.aim, 3.0 * delta)
-		var body: PackedVector2Array = snake.body
-		body[0] += Vector2.from_angle(snake.angle) * (310.0 if boosting else 190.0) * delta
-		for index: int in range(1, body.size()):
-			var gap: Vector2 = body[index - 1] - body[index]
-			if gap.length_squared() > SPACING * SPACING:
-				body[index] = body[index - 1] - gap.normalized() * SPACING
+		var head: Vector2 = snake.body[0] + Vector2.from_angle(snake.angle) * (310.0 if boosting else 190.0) * delta
+		append_head(trails[id], head)
+		var body: PackedVector2Array = sample_body(trails[id], int(snake.mass))
 		if boosting:
 			snake.mass = maxf(START_MASS, snake.mass - 3.0 * delta)
 			snake.boost_clock += delta
@@ -149,11 +174,8 @@ func tick(delta: float) -> void:
 				snake.best = maxf(snake.best, snake.mass)
 				food.remove_at(index)
 		var length: int = int(snake.mass)
-		while body.size() < length:
-			body.append(body[body.size() - 1])
-		if body.size() > length:
-			body.resize(length)
-		snake.body = body
+		if body.size() != length:
+			snake.body = sample_body(trails[id], length)
 	refill_clock += delta
 	if refill_clock >= 0.2:
 		refill_clock = 0.0

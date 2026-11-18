@@ -22,6 +22,7 @@ var _published_snakes: Dictionary = {}
 var _published_food: Dictionary = {}
 var _food: Dictionary = {}
 var _head_history: Dictionary = {}
+var _trails: Dictionary[String, PackedVector2Array] = {}
 var _head_ticks: Dictionary = {}
 var _tick: int = 0
 var _sample: int = 0
@@ -182,7 +183,8 @@ func _publish() -> void:
 			if not previous.has(field) or previous[field] != value:
 				facts[field] = value
 		if previous.is_empty() or previous.generation != snake.generation:
-			facts["body"] = snake.body.duplicate()
+			facts["mass"] = int(snake.mass)
+			facts["spawn_trail"] = world.trails[id].duplicate()
 			facts["angle"] = snake.angle
 			facts["shield_end_msec"] = api.net.host_time_msec() + roundi(snake.shield * 1000.0)
 		if previous.is_empty() or previous.alive != snake.alive:
@@ -312,12 +314,19 @@ func _receive_update(topic: StringName, payload: Dictionary) -> void:
 		var facts: Dictionary = payload.snakes[id]
 		if not view.snakes.has(id):
 			view.snakes[id] = {"shield": 0.0, "respawn": 0.0}
-		if facts.has("body"):
-			if not facts.body is PackedVector2Array or facts.body.is_empty() or facts.body.size() > int(World.MAX_MASS):
+		if facts.has("spawn_trail"):
+			var trail: Variant = facts.spawn_trail
+			if not trail is PackedVector2Array or trail.size() < 2 or trail.size() > World.TRAIL_LIMIT:
+				_fail(ERR_INVALID_DATA)
 				return
-			for point: Vector2 in facts.body:
+			for point: Vector2 in trail:
 				if not point.is_finite():
+					_fail(ERR_INVALID_DATA)
 					return
+			_trails[id] = trail
+			facts = facts.duplicate()
+			facts.erase("spawn_trail")
+			facts.body = World.sample_body(_trails[id], int(facts.mass))
 			_head_ticks[id] = payload.tick
 		view.snakes[id].merge(facts, true)
 	for id: Variant in payload.food_added:
@@ -348,23 +357,15 @@ func _apply_heads(payload: Dictionary, present: bool = true) -> void:
 		var snake: Dictionary = view.snakes[id]
 		if sample.get("generation") != snake.generation or not sample.get("heads") is PackedVector2Array or sample.heads.size() > 24 or not (sample.get("angle") is float or sample.get("angle") is int) or not is_finite(float(sample.angle)):
 			continue
-		var body: PackedVector2Array = snake.body
 		var length: int = clampi(int(snake.mass), 1, int(World.MAX_MASS))
-		while body.size() < length:
-			body.append(body[body.size() - 1])
-		body.resize(length)
 		for index: int in sample.heads.size():
 			var step_id: int = payload.tick - sample.heads.size() + index + 1
 			var point: Vector2 = sample.heads[index]
 			if step_id <= int(_head_ticks.get(id, -1)) or not point.is_finite():
 				continue
-			body[0] = point
-			for part: int in range(1, body.size()):
-				var gap: Vector2 = body[part - 1] - body[part]
-				if gap.length_squared() > World.SPACING * World.SPACING:
-					body[part] = body[part - 1] - gap.normalized() * World.SPACING
+			World.append_head(_trails[id], point)
 			_head_ticks[id] = step_id
-		snake.body = body
+		snake.body = World.sample_body(_trails[id], length)
 		snake.angle = sample.angle
 	if present:
 		arena.accept(view.duplicate(true))
