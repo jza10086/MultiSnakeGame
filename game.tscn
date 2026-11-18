@@ -6,6 +6,31 @@
 [ext_resource type="FontFile" uid="uid://ycpuwgjxu5k" path="res://games/assets/GP_default_ui/fonts/NotoSansSC-UI.otf" id="1_uygxa"]
 [ext_resource type="Script" uid="uid://bvihxku4gjej4" path="res://games/minigame/GP_snake_battle/arena_view.gd" id="2_uygxa"]
 
+[ext_resource type="Texture2D" path="res://games/minigame/GP_snake_battle/snake_mark.svg" id="mark"]
+
+[sub_resource type="StyleBoxFlat" id="Card"]
+bg_color = Color(0.984, 0.988, 0.964, 1)
+border_color = Color(0.73, 0.80, 0.75, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_left = 14
+corner_radius_bottom_right = 14
+content_margin_left = 16.0
+content_margin_top = 9.0
+content_margin_right = 16.0
+content_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxFlat" id="TimerChip"]
+bg_color = Color(0.09, 0.32, 0.25, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_left = 22
+corner_radius_bottom_right = 22
+
 [sub_resource type="Theme" id="Theme_b8gk3"]
 default_font = ExtResource("1_uygxa")
 
@@ -39,31 +64,43 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TopLeft" type="MarginContainer" parent="HUD/Overlay" unique_id=1792971414]
+[node name="TopLeft" type="PanelContainer" parent="HUD/Overlay" unique_id=1792971414]
 layout_mode = 0
 offset_left = 32.0
 offset_top = 26.0
 mouse_filter = 2
+theme_override_styles/panel = SubResource("Card")
 
-[node name="StatsGroup" type="VBoxContainer" parent="HUD/Overlay/TopLeft" unique_id=1489472849]
+[node name="HeaderRow" type="HBoxContainer" parent="HUD/Overlay/TopLeft"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 7
+theme_override_constants/separation = 12
 
-[node name="Title" type="Label" parent="HUD/Overlay/TopLeft/StatsGroup" unique_id=383441478]
+[node name="Mark" type="TextureRect" parent="HUD/Overlay/TopLeft/HeaderRow"]
+custom_minimum_size = Vector2(42, 42)
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("mark")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatsGroup" type="VBoxContainer" parent="HUD/Overlay/TopLeft/HeaderRow" unique_id=1489472849]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="HUD/Overlay/TopLeft/HeaderRow/StatsGroup" unique_id=383441478]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
-theme_override_constants/outline_size = 6
+theme_override_colors/font_color = Color(0.13, 0.24, 0.20, 1)
 theme_override_font_sizes/font_size = 25
 text = "蛇蛇大作战"
 
-[node name="Stats" type="Label" parent="HUD/Overlay/TopLeft/StatsGroup" unique_id=1465201381]
+[node name="Stats" type="Label" parent="HUD/Overlay/TopLeft/HeaderRow/StatsGroup" unique_id=1465201381]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.13, 0.24, 0.20, 1)
+theme_override_font_sizes/font_size = 17
 text = "长度 42    最高 68    击败 2"
 
 [node name="Timer" type="Label" parent="HUD/Overlay" unique_id=96547383]
@@ -71,13 +108,13 @@ unique_name_in_owner = true
 layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -90.0
+offset_left = -64.0
 offset_top = 26.0
-offset_right = 90.0
-offset_bottom = 76.0
-theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 32
+offset_right = 64.0
+offset_bottom = 74.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("TimerChip")
+theme_override_font_sizes/font_size = 27
 text = "02:38"
 horizontal_alignment = 1
 
@@ -86,18 +123,19 @@ unique_name_in_owner = true
 layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -355.0
+grow_horizontal = 0
+offset_left = -32.0
 offset_top = 26.0
 offset_right = -32.0
-offset_bottom = 270.0
-theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 20
+offset_bottom = 26.0
+theme_override_styles/normal = SubResource("Card")
+theme_override_colors/font_color = Color(0.13, 0.24, 0.20, 1)
+theme_override_font_sizes/font_size = 18
 text = "本轮最高长度
 1  玩家示例甲  ·  68
 2  玩家示例乙  ·  42
 3  玩家示例丙  ·  22"
-horizontal_alignment = 2
+horizontal_alignment = 0
 
 [node name="Message" type="Label" parent="HUD/Overlay" unique_id=926320111]
 unique_name_in_owner = true
@@ -109,8 +147,7 @@ anchor_bottom = 0.72
 offset_left = -500.0
 offset_right = 500.0
 offset_bottom = 60.0
-theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
-theme_override_constants/outline_size = 6
+theme_override_colors/font_color = Color(0.13, 0.24, 0.20, 1)
 theme_override_font_sizes/font_size = 29
 text = "出生保护 · 2 秒"
 horizontal_alignment = 1
@@ -119,15 +156,15 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 0
 anchor_top = 1.0
-anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 32.0
-offset_top = -56.0
-offset_right = -32.0
-offset_bottom = -18.0
-theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 0.9)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 20
+offset_top = -24.0
+offset_right = 32.0
+offset_bottom = -24.0
+grow_vertical = 0
+theme_override_styles/normal = SubResource("Card")
+theme_override_colors/font_color = Color(0.13, 0.24, 0.20, 1)
+theme_override_font_sizes/font_size = 17
 text = "鼠标指向 / 方向键转向    鼠标左键 / Space 加速    R 排名    Tab 延迟    Esc 菜单"
 
 [node name="ProtocolPages" parent="." instance=ExtResource("protocol_pages")]
