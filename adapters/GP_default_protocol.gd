@@ -7,7 +7,7 @@ static func party_definition() -> Dictionary:
 
 func check_request(request: Dictionary) -> Dictionary:
 	if request.get("mode") != "standard":
-		return {"ok": false, "code": "unsupported_mode", "message": "蛇蛇大作战仅支持普通排名局。"}
+		return {"ok": false, "code": "unsupported_mode", "message": "吃豆蛇仅支持普通排名局。"}
 	return {"ok": true}
 
 func make_config(request: Dictionary) -> Dictionary:

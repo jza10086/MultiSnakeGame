@@ -3,8 +3,8 @@ msgstr ""
 "Language: zh_Hans\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "蛇蛇大作战"
-msgstr "蛇蛇大作战"
+msgid "吃豆蛇"
+msgstr "吃豆蛇"
 
 msgid "1–8 人同场蛇蛇竞技：鼠标或方向键转向，吞食果实成长，加速消耗长度。撞墙或撞到别人的蛇身会死亡，3 秒后自动复活，出生保护 2 秒。可以穿过自己。默认 3 分钟，按本轮最高长度排名。"
 msgstr "1–8 人同场蛇蛇竞技：鼠标或方向键转向，吞食果实成长，加速消耗长度。撞墙或撞到别人的蛇身会死亡，3 秒后自动复活，出生保护 2 秒。可以穿过自己。默认 3 分钟，按本轮最高长度排名。"
@@ -70,4 +70,4 @@ msgid "result.deaths"
 msgstr "死亡"
 
 msgid "package.name"
-msgstr "蛇蛇大作战"
+msgstr "吃豆蛇"

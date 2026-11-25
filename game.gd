@@ -53,9 +53,9 @@ func party_setup(context: PartyAPI, config: Dictionary) -> void:
 
 func _ready() -> void:
 	if api == null:
-		push_error("请从 GodotParty 大厅启动蛇蛇大作战。")
+		push_error("请从 GodotParty 大厅启动吃豆蛇。")
 		return
-	%Title.text = api.i18n.text(&"蛇蛇大作战")
+	%Title.text = api.i18n.text(&"吃豆蛇")
 	# Scene captions are editor examples; only round snapshots supply live values.
 	stats.text = ""
 	timer.text = ""
