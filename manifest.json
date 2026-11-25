@@ -1,7 +1,7 @@
 {
   "id": "GP_snake_battle",
   "kind": "minigame",
-  "package_version": "0.1.5",
+  "package_version": "0.1.6",
   "framework_version": "0.6.0",
   "remark": "",
   "supported_languages": [
@@ -9,6 +9,6 @@
   ],
   "dependencies": {
     "GP_default_protocol": "~0.3.0",
-    "GP_default_ui": "~0.1.0"
+    "GP_default_ui": "~0.2.0"
   }
 }
